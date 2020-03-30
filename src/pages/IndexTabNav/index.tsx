@@ -1,20 +1,10 @@
 import * as React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from '../../components/Icon';
 import Home from './tabs/Home';
 import UploadPosting from '../UploadPosting';
 import {StackNavigationProp} from '@react-navigation/stack';
-// import {Popup} from '../../asrn_ui/src';
-// import {useState} from 'react';
-// import {Color} from '../../config/color_yep';
-// import ImagePicker, {Image} from 'react-native-image-crop-picker';
 
 function SettingsScreen() {
   return (
@@ -83,33 +73,6 @@ interface Props {
 }
 
 function TabIndex(props: Props) {
-  // const [visible, setVisible] = useState(false);
-
-  /*const navigateUploadPosting = (images: Image[]) => {
-    props.navigation.navigate('UploadPosting', {
-      imageList: images,
-    });
-  };*/
-
-  /*const selectFromLibrary = async () => {
-    try {
-      // @ts-ignore
-      const images: Image[] = await ImagePicker.openPicker({
-        multiple: true,
-        compressVideoPreset: 'HighQuality',
-        loadingLabelText: '读取中',
-        showsSelectedCount: false,
-        compressImageQuality: 1,
-        maxFiles: 9,
-      });
-      setVisible(false);
-      navigateUploadPosting(images);
-    } catch (e) {
-      console.error(e);
-      setVisible(false);
-    }
-  };*/
-
   return (
     <View style={{flex: 1}}>
       <TabPage
@@ -117,59 +80,8 @@ function TabIndex(props: Props) {
           props.navigation.navigate('UploadPosting');
         }}
       />
-      {/*<Popup onClose={() => setVisible(false)} visible={visible}>
-        <SafeAreaView>
-          <View
-            style={{
-              backgroundColor: Color.bgPrimary,
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-            }}>
-            <WhiteButton text={'拍摄'} onPress={() => {}} />
-            <View
-              style={{
-                height: StyleSheet.hairlineWidth,
-                backgroundColor: Color.splitLine1,
-              }}
-            />
-            <WhiteButton text={'从相册选取'} onPress={selectFromLibrary} />
-            <View
-              style={{
-                height: 10,
-                backgroundColor: Color.bgGray,
-              }}
-            />
-            <WhiteButton text={'取消'} onPress={() => setVisible(false)} />
-          </View>
-        </SafeAreaView>
-      </Popup>*/}
     </View>
   );
 }
-
-/*const WhiteButton = ({text, onPress}) => {
-  return (
-    <TouchableOpacity
-      style={styles.whiteButton}
-      onPress={() => {
-        onPress && onPress();
-      }}>
-      <Text style={styles.whiteButtonText}>{text}</Text>
-    </TouchableOpacity>
-  );
-};*/
-
-/*const styles = StyleSheet.create({
-  whiteButton: {
-    paddingVertical: 15,
-    alignItems: 'center',
-  },
-  whiteButtonText: {
-    color: Color.primary,
-    fontSize: 18,
-    height: 24,
-    lineHeight: 24,
-  },
-});*/
 
 export default TabIndex;
