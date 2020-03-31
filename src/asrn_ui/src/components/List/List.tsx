@@ -21,6 +21,7 @@ export interface ItemProps {
     important?: boolean,  // 星号 *
     style?: ViewStyle,
     arrowStyle?: ImageStyle,
+    extraNumberLines?: number,
 }
 
 class Item extends React.Component<ItemProps>{
@@ -42,7 +43,7 @@ class Item extends React.Component<ItemProps>{
     renderExtra() {
         const extra = this.props.extra;
         if (extra) {
-            return typeof extra === 'string' ? <Text style={[styles.extraText,this.props.extraStyle]}>{extra}</Text> : extra;
+            return typeof extra === 'string' ? <Text style={[styles.extraText,this.props.extraStyle]} numberOfLines={this.props.extraNumberLines}>{extra}</Text> : extra;
         }
     }
 }
@@ -85,7 +86,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         padding: 0,
         flex: 1,
-        textAlign: 'right'
+        textAlign: 'right',
+        marginLeft: 10,
     },
     arrow: {
         width: 5,

@@ -18,6 +18,7 @@ import {View} from 'react-native';
 import IndexTabNav from './src/pages/IndexTabNav';
 import UploadPosting from './src/pages/UploadPosting';
 import CommunitySelect from './src/pages/CommunitySelect';
+import BaiduMapPositionChoice from './src/pages/BaiduMapPositionChoice';
 
 import Asrn, {Modal, Toast, Loading} from './src/asrn_ui';
 
@@ -42,6 +43,11 @@ function StackNavigation() {
         <Stack.Screen
           name="CommunitySelect"
           component={CommunitySelect}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="BaiduMapPositionChoice"
+          component={BaiduMapPositionChoice}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

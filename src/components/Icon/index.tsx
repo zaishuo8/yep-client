@@ -26,6 +26,9 @@ const iconNameSource = {
   ['location-black']: require('../../asset/icon/location-black.png'),
   ['arrow-left-black']: require('../../asset/icon/arrow-left-black.png'),
   ['search-gray']: require('../../asset/icon/search-gray.png'),
+  ['hook-blue']: require('../../asset/icon/hook-blue.png'),
+  ['location-blue']: require('../../asset/icon/location-blue.png'),
+  ['location-fill-blue']: require('../../asset/icon/location-fill-blue.png'),
 };
 
 interface Props {

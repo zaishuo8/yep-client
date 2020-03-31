@@ -7,7 +7,8 @@ import {
   TextStyle,
   TouchableOpacity,
   Text,
-  StyleSheet, ViewStyle,
+  StyleSheet,
+  ViewStyle,
 } from 'react-native';
 import {afterIPhoneX} from '../../utils/deviceUtil';
 import {Color} from '../../config/color_yep';
@@ -21,6 +22,7 @@ interface Props {
   rightTitle?: string;
   rightTitleStyle?: TextStyle;
   onLeftPress?: () => void;
+  onRightPress?: () => void;
   headerStyle?: ViewStyle;
 }
 
@@ -69,6 +71,9 @@ function Index(props: Props) {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'flex-end',
+          }}
+          onPress={() => {
+            props.onRightPress && props.onRightPress();
           }}>
           <Text style={[styles.defaultRightText, props.rightTitleStyle]}>
             {props.rightTitle || ''}

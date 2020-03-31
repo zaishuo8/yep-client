@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,6 +22,8 @@ import {SCREEN_WIDTH} from '../../const/screen';
 import {List, Popup} from '../../asrn_ui';
 import Icon from '../../components/Icon';
 import {Community} from '../../api/request/community';
+import {MapView, MapTypes, Geolocation, Overlay, MapApp, Position, getCurrentPosition} from '../../components/BaiduMap';
+import {getNearbyPoi} from "../../api/request/baidu_map";
 
 interface Props {
   navigation: StackNavigationProp<any>;
@@ -47,6 +49,23 @@ function Index(props: Props) {
   const [selectedCommunity, setSelectedCommunity] = useState<
     Community | undefined
   >(undefined);
+  const [position, setPosition] = useState<Position | undefined>(undefined);
+
+  useEffect(() => {
+    async function getPosition() {
+      const position = await getCurrentPosition();
+      if (position) {
+        const pois = await getNearbyPoi(position.latitude, position.longitude);
+        if (pois && pois.length > 0) {
+          setPosition(pois[0]);
+        } else {
+          setPosition(position);
+        }
+      }
+    }
+
+    getPosition();
+  }, []);
 
   const selectFromLibrary = async () => {
     try {
@@ -151,11 +170,21 @@ function Index(props: Props) {
               }
               title={'选择位置'}
               textStyle={{color: Color.primary}}
-              extra={' '}
-              extraStyle={{color: Color.primary}}
+              extra={
+                (position && position.name) ||
+                (position && position.address) ||
+                ' '
+              }
+              extraStyle={{color: Color.statusBlue}}
+              extraNumberLines={1}
               arrow={'right'}
               arrowStyle={{width: 8, height: 16}}
-              onPress={() => {}}
+              onPress={() => {
+                props.navigation.navigate('BaiduMapPositionChoice', {
+                  position,
+                  onGoBack: (position: Position) => setPosition(position),
+                });
+              }}
             />
             <View
               style={{
