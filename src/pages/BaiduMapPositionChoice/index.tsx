@@ -1,5 +1,13 @@
 import React, {RefObject} from 'react';
-import {FlatList, Route, SafeAreaView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {
+  FlatList,
+  Route,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   defaultPosition,
   getCurrentPosition,
@@ -12,8 +20,13 @@ import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../const/screen';
 import {Color} from '../../config/color_yep';
 import CustomHeader from '../../components/CustomHeader';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Coordtype, getAddressWithPoi, mapAddressWithPoiResultToPosition,} from '../../api/request/baidu_map';
+import {
+  Coordtype,
+  getAddressWithPoi,
+  mapAddressWithPoiResultToPosition,
+} from '../../api/request/baidu_map';
 import Icon from '../../components/Icon';
+import Search from "../../components/Search";
 
 interface Props {
   /**
@@ -110,13 +123,25 @@ class Index extends React.PureComponent<Props, State> {
                 }
               }}
             />
+            <Search
+              style={{
+                position: 'absolute',
+                width: SCREEN_WIDTH - 30,
+                marginLeft: 15,
+                marginTop: 10,
+                backgroundColor: Color.bgPrimary,
+                height: 30,
+              }}
+              onFocus={() => this.props.navigation.pop()}
+              textStyle={{fontSize: 15}}
+              placeholder={'搜索位置'}
+              placeholderTextColor={Color.fontGray}
+            />
             <Icon
               name={'location-fill-blue'}
               size={40}
               style={{
                 position: 'absolute',
-                // top: 0,
-                // left: 0,
                 top: (SCREEN_HEIGHT * 0.4 - 40) / 4,
                 left: (SCREEN_WIDTH - 40) / 4,
               }}

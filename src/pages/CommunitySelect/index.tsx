@@ -59,7 +59,10 @@ export default function Index(props: Props) {
           flex: 1,
           backgroundColor: Color.bgPrimary,
         }}>
-        <Search style={{marginHorizontal: 15, marginVertical: 10}} />
+        <Search
+          style={{marginHorizontal: 15, marginVertical: 10}}
+          placeholder={'搜索圈子'}
+        />
         <View
           style={{
             flex: 1,
