@@ -7,6 +7,13 @@ export interface Community {
   img: string;
 }
 
+const querys = ['小区'];
+
+let queryStr = '';
+for (const q of querys) {
+  queryStr = queryStr + q + '$';
+}
+
 /**
  * 获取附近 poi
  * */
@@ -18,10 +25,11 @@ export async function getNearbyPoi(
 ): Promise<Position[]> {
   try {
     const result = await fetchWithTimeout(
-      `http://api.map.baidu.com/place/v2/search?query=美食$购物$酒店$旅游景点$休闲娱乐$交通设施$生活服务&location=${lat},${lon}&radius=2000&output=json&ak=daIKDkz9PRqU7slQ6dKTtw2cEiONo3cY&scope=2&filter=sort_name:distance|sort_rule:1&page_size=${page_size}&page_num=${page_num}`,
+      `http://api.map.baidu.com/place/v2/search?query=${queryStr}&location=${lat},${lon}&radius=2000&output=json&ak=daIKDkz9PRqU7slQ6dKTtw2cEiONo3cY&scope=2&filter=sort_name:distance|sort_rule:1&page_size=${page_size}&page_num=${page_num}`,
       {timeout: 5000},
     );
     const json = await result.json();
+    // console.log(json);
     if (json.status === 0) {
       return json.results.map(joi => ({
         name: joi.name,
@@ -29,6 +37,67 @@ export async function getNearbyPoi(
         latitude: joi.location.lat,
         longitude: joi.location.lng,
       }));
+    } else {
+      throw json;
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+const ak = 'daIKDkz9PRqU7slQ6dKTtw2cEiONo3cY';
+
+interface AddressWithPoiResult {
+  location: {
+    lat: number;
+    lng: number;
+  };
+  sematic_description: string;
+  formatted_address: string;
+  pois: {
+    name: string;
+    addr: string;
+    point: {
+      x: number;
+      y: number;
+    };
+  }[];
+}
+
+export function mapAddressWithPoiResultToPosition(
+  result: AddressWithPoiResult,
+) {
+  return {
+    latitude: result.location.lat,
+    longitude: result.location.lng,
+    name: result.sematic_description,
+    address: result.formatted_address,
+  };
+}
+
+export enum Coordtype {
+  BaiDu = 'bd09ll', // 百度经纬度坐标
+  BaiDuMeter = 'bd09mc', // 百度米制坐标
+  China = 'gcj02ll', // 国测局经纬度坐标，仅限中国
+  GPS = 'wgs84ll', // GPS经纬度
+}
+
+export async function getAddressWithPoi(
+  lat: number,
+  lng: number,
+  options?: {coordtype?: Coordtype},
+): Promise<AddressWithPoiResult> {
+  try {
+    const coordtype = (options && options.coordtype) || Coordtype.China;
+    const result = await fetchWithTimeout(
+      `http://api.map.baidu.com/reverse_geocoding/v3/?ak=${ak}&output=json&location=${lat},${lng}&radius=4000&coordtype=${coordtype}&extensions_poi=1`,
+      {timeout: 5000},
+    );
+    const json = await result.json();
+    console.log(json);
+    if (json.status === 0) {
+      return json.result;
     } else {
       throw json;
     }

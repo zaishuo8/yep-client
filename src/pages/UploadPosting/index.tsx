@@ -23,7 +23,7 @@ import {List, Popup} from '../../asrn_ui';
 import Icon from '../../components/Icon';
 import {Community} from '../../api/request/community';
 import {MapView, MapTypes, Geolocation, Overlay, MapApp, Position, getCurrentPosition} from '../../components/BaiduMap';
-import {getNearbyPoi} from "../../api/request/baidu_map";
+import {getAddressWithPoi, getNearbyPoi, mapAddressWithPoiResultToPosition} from "../../api/request/baidu_map";
 
 interface Props {
   navigation: StackNavigationProp<any>;
@@ -55,12 +55,11 @@ function Index(props: Props) {
     async function getPosition() {
       const position = await getCurrentPosition();
       if (position) {
-        const pois = await getNearbyPoi(position.latitude, position.longitude);
-        if (pois && pois.length > 0) {
-          setPosition(pois[0]);
-        } else {
-          setPosition(position);
-        }
+        const result = await getAddressWithPoi(
+          position.latitude,
+          position.longitude,
+        );
+        setPosition(mapAddressWithPoiResultToPosition(result));
       }
     }
 

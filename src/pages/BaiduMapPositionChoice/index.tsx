@@ -1,17 +1,18 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {FlatList, Route, StyleSheet, View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
+import React, {RefObject} from 'react';
+import {FlatList, Route, SafeAreaView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {
-  MapView,
-  MapTypes,
-  Position,
   defaultPosition,
+  getCurrentPosition,
+  MapTypes,
+  MapView,
   onMapStatusChange,
+  Position,
 } from '../../components/BaiduMap';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from '../../const/screen';
 import {Color} from '../../config/color_yep';
 import CustomHeader from '../../components/CustomHeader';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {getNearbyPoi} from '../../api/request/baidu_map';
+import {Coordtype, getAddressWithPoi, mapAddressWithPoiResultToPosition,} from '../../api/request/baidu_map';
 import Icon from '../../components/Icon';
 
 interface Props {
@@ -25,36 +26,37 @@ interface Props {
 
 interface State {
   position?: Position;
-  positionList: Position[];
 }
 
 class Index extends React.PureComponent<Props, State> {
+  poiListRef: RefObject<PoiList> = React.createRef();
+  afterPoiListPress: boolean = false; // 是否在点击 POI 之后
+  firstRender: boolean = true;
+
   constructor(props: Props) {
     super(props);
     this.state = {
       position: props.route.params.position,
-      positionList: [],
     };
   }
 
-  setPoiPositionList = async (position: Position) => {
-    const result = await getNearbyPoi(
-      position.latitude,
-      position.longitude,
-      20,
-      1,
-    );
-    const list: Position[] = result || [];
-    // 把传进来的地址放到list的第一个且被选中
-    list.unshift(position);
-    this.setState({
-      positionList: list,
-      position: list[0],
-    });
+  setPoiPositionList = (position: Position) => {
+    if (this.poiListRef.current) {
+      // 重设列表
+      this.poiListRef.current.setPoiPositionList(position);
+      setTimeout(() => {
+        // 把列表置顶
+        this.poiListRef.current.scrollToTop();
+      }, 100);
+    }
   };
 
-  componentDidMount() {
-    const position = this.props.route.params.position;
+  async componentDidMount() {
+    setTimeout(() => {
+      this.firstRender = false;
+    }, 2000);
+    const position =
+      this.props.route.params.position || (await getCurrentPosition());
     if (position) {
       this.setPoiPositionList(position);
     } else {
@@ -80,6 +82,7 @@ class Index extends React.PureComponent<Props, State> {
         <View style={{flex: 1}}>
           <View>
             <MapView
+              width={SCREEN_WIDTH}
               height={SCREEN_HEIGHT * 0.4}
               zoom={18}
               zoomControlsVisible={true}
@@ -93,16 +96,19 @@ class Index extends React.PureComponent<Props, State> {
                   (this.state.position && this.state.position.latitude) ||
                   defaultPosition.latitude,
               }}
-              onMapPoiClick={poi => {
-                this.setPoiPositionList(poi);
+              onMapStatusChange={params => {
+                // 进页面的首次渲染不需要触发这个
+                if (!this.firstRender) {
+                  if (!this.afterPoiListPress) {
+                    onMapStatusChange(params, (newPosition: Position) => {
+                      // @ts-ignore 这里直接赋值，setState 会无限循环
+                      this.state.position = newPosition;
+                      this.setPoiPositionList(newPosition);
+                    });
+                  }
+                  this.afterPoiListPress = false;
+                }
               }}
-              // onMapStatusChange={params => {
-              //   onMapStatusChange(params, (newPosition: Position) => {
-              //     this.setState({
-              //       position: newPosition,
-              //     });
-              //   });
-              // }}
             />
             <Icon
               name={'location-fill-blue'}
@@ -116,75 +122,13 @@ class Index extends React.PureComponent<Props, State> {
               }}
             />
           </View>
-          <View
-            style={{
-              backgroundColor: Color.bgPrimary,
-              paddingLeft: 15,
-              flex: 1,
-              paddingTop: 10,
-            }}>
-            <SafeAreaView>
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                data={this.state.positionList}
-                renderItem={({item, index}) => {
-                  return (
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({position: item});
-                      }}
-                      style={{
-                        height: 50,
-                        borderBottomColor: Color.splitLine1,
-                        borderBottomWidth:
-                          index === this.state.positionList.length - 1
-                            ? 0
-                            : StyleSheet.hairlineWidth,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingRight: 15,
-                      }}>
-                      <View
-                        style={{
-                          flex: 1,
-                          justifyContent: 'space-around',
-                          paddingVertical: 4,
-                          marginRight: 20,
-                          alignSelf: 'stretch',
-                        }}>
-                        {item.name && (
-                          <Text
-                            style={{
-                              color: Color.primary,
-                              fontSize: 16,
-                            }}
-                            numberOfLines={1}>
-                            {item.name}
-                          </Text>
-                        )}
-                        {item.address && (
-                          <Text
-                            style={{
-                              color: Color.fontGray,
-                              fontSize: 12,
-                            }}
-                            numberOfLines={1}>
-                            {item.address}
-                          </Text>
-                        )}
-                      </View>
-                      {item.latitude === this.state.position.latitude &&
-                      item.longitude === this.state.position.longitude ? (
-                        <Icon name={'hook-blue'} size={20} />
-                      ) : (
-                        <View style={{width: 20}} />
-                      )}
-                    </TouchableOpacity>
-                  );
-                }}
-              />
-            </SafeAreaView>
-          </View>
+          <PoiList
+            ref={this.poiListRef}
+            setFatherPosition={(position: Position) => {
+              this.afterPoiListPress = true;
+              this.setState({position});
+            }}
+          />
         </View>
       </View>
     );
@@ -192,3 +136,134 @@ class Index extends React.PureComponent<Props, State> {
 }
 
 export default Index;
+
+interface PoiListProps {
+  setFatherPosition: (position: Position) => void;
+}
+
+interface PoiListState {
+  positionList: Position[];
+  position?: Position;
+}
+
+class PoiList extends React.PureComponent<PoiListProps, PoiListState> {
+  state: PoiListState = {
+    positionList: [],
+    position: undefined,
+  };
+  flatListRef: RefObject<FlatList<any>> = React.createRef();
+
+  setPoiPositionList = async (position: Position) => {
+    const result = await getAddressWithPoi(
+      position.latitude,
+      position.longitude,
+      {coordtype: Coordtype.BaiDu},
+    );
+    if (result) {
+      const list: Position[] = result.pois.map(poi => {
+        return {
+          name: poi.name,
+          address: poi.addr,
+          latitude: poi.point.y,
+          longitude: poi.point.x,
+        };
+      });
+      if (position.name) {
+        list.unshift(position);
+      } else {
+        console.log('jinlaile');
+        list.unshift(mapAddressWithPoiResultToPosition(result));
+      }
+      if (list && list.length > 0) {
+        this.setState({
+          positionList: list,
+          position: list[0],
+        });
+        this.props.setFatherPosition(list[0]);
+      }
+    }
+  };
+
+  scrollToTop = () => {
+    this.flatListRef.current &&
+      this.flatListRef.current.scrollToIndex({index: 0, animated: false});
+  };
+
+  render() {
+    return (
+      <View
+        style={{
+          backgroundColor: Color.bgPrimary,
+          paddingLeft: 15,
+          flex: 1,
+          paddingTop: 10,
+        }}>
+        <SafeAreaView>
+          <FlatList
+            ref={this.flatListRef}
+            keyExtractor={(item, index) => index.toString()}
+            data={this.state.positionList}
+            renderItem={({item, index}) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({position: item});
+                    this.props.setFatherPosition &&
+                      this.props.setFatherPosition(item);
+                  }}
+                  style={{
+                    height: 56,
+                    borderBottomColor: Color.splitLine1,
+                    borderBottomWidth:
+                      index === this.state.positionList.length - 1
+                        ? 0
+                        : StyleSheet.hairlineWidth,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingRight: 15,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'space-around',
+                      paddingVertical: 4,
+                      marginRight: 20,
+                      alignSelf: 'stretch',
+                    }}>
+                    {item.name && (
+                      <Text
+                        style={{
+                          color: Color.primary,
+                          fontSize: 16,
+                        }}
+                        numberOfLines={1}>
+                        {item.name}
+                      </Text>
+                    )}
+                    {item.address && (
+                      <Text
+                        style={{
+                          color: Color.fontGray,
+                          fontSize: 12,
+                        }}
+                        numberOfLines={1}>
+                        {item.address}
+                      </Text>
+                    )}
+                  </View>
+                  {item.latitude === this.state.position.latitude &&
+                  item.longitude === this.state.position.longitude &&
+                  item.address === this.state.position.address ? (
+                    <Icon name={'hook-blue'} size={20} />
+                  ) : (
+                    <View style={{width: 20}} />
+                  )}
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </SafeAreaView>
+      </View>
+    );
+  }
+}
