@@ -26,7 +26,7 @@ import {
   mapAddressWithPoiResultToPosition,
 } from '../../api/request/baidu_map';
 import Icon from '../../components/Icon';
-import Search from "../../components/Search";
+import Search from '../../components/Search';
 
 interface Props {
   /**
@@ -132,7 +132,13 @@ class Index extends React.PureComponent<Props, State> {
                 backgroundColor: Color.bgPrimary,
                 height: 30,
               }}
-              onFocus={() => this.props.navigation.pop()}
+              onFocus={() => {
+                const {onGoBack} = this.props.route.params;
+                this.props.navigation.navigate('PositionSearch', {
+                  onPositionSelectPage: 'UploadPosting',
+                  onPositionSelect: onGoBack,
+                });
+              }}
               textStyle={{fontSize: 15}}
               placeholder={'搜索位置'}
               placeholderTextColor={Color.fontGray}
@@ -210,8 +216,10 @@ class PoiList extends React.PureComponent<PoiListProps, PoiListState> {
   };
 
   scrollToTop = () => {
-    this.flatListRef.current &&
-      this.flatListRef.current.scrollToIndex({index: 0, animated: false});
+    if (this.state.positionList.length > 0) {
+      this.flatListRef.current &&
+        this.flatListRef.current.scrollToIndex({index: 0, animated: false});
+    }
   };
 
   render() {

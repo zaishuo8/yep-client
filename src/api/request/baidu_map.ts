@@ -106,3 +106,36 @@ export async function getAddressWithPoi(
     throw e;
   }
 }
+
+// http://api.map.baidu.com/place/v2/suggestion?query=%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4&region=%E6%9D%AD%E5%B7%9E&output=json&ak=daIKDkz9PRqU7slQ6dKTtw2cEiONo3cY
+
+export async function getSearchPois(query: {
+  searchText: string;
+  pageNo: number;
+  pageSize: number;
+}): Promise<Position[]> {
+  const {searchText, pageSize, pageNo} = query;
+  try {
+    const result = await fetchWithTimeout(
+      `http://api.map.baidu.com/place/v2/search?query=${searchText}&region=杭州&output=json&ak=${ak}&page_size=${pageSize}&page_num=${pageNo}`,
+      {timeout: 5000},
+    );
+    const json = await result.json();
+    console.log(json);
+    if (json.status === 0) {
+      return json.results.map(poi => ({
+        name: poi.name,
+        address: poi.address,
+        latitude: poi.location.lat,
+        longitude: poi.location.lng,
+        province: poi.province,
+        city: poi.city,
+      }));
+    } else {
+      throw json;
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

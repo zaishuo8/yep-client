@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {
   View,
   Platform,
@@ -15,7 +15,7 @@ import {Color} from '../../config/color_yep';
 import Icon from '../Icon';
 
 interface Props {
-  title?: string;
+  title?: string | ReactElement;
   titleStyle?: TextStyle;
   leftTitle?: string;
   leftTitleStyle?: TextStyle;
@@ -63,9 +63,13 @@ function Index(props: Props) {
             <Icon name={'arrow-left-black'} size={16} />
           )}
         </TouchableOpacity>
-        <Text style={[styles.defaultTitleText, props.titleStyle]}>
-          {props.title || ''}
-        </Text>
+        {typeof props.title === 'string' ? (
+          <Text style={[styles.defaultTitleText, props.titleStyle]}>
+            {props.title || ''}
+          </Text>
+        ) : (
+          props.title
+        )}
         <TouchableOpacity
           style={{
             flex: 1,
