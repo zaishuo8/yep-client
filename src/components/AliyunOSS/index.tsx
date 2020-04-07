@@ -35,7 +35,13 @@ export default AliyunOSS;
 export async function uploadOSS(medias: Media[]) {
   if (medias && medias.length > 0 && !store.getState().oss.uploading) {
     // 通知 redux 显示上传
-    store.dispatch({type: StartUploadingType, cover: medias[0]});
+    store.dispatch({
+      type: StartUploadingType,
+      cover: {
+        url: medias[0].url,
+        type: medias[0].type,
+      },
+    });
     // 监听进度，更新进度 UI
     let count = 1;
     AliyunOSS.addEventListener(OSSEvent.UploadProgress, p => {
@@ -57,6 +63,7 @@ export async function uploadOSS(medias: Media[]) {
         store.dispatch({type: EndUploadingType});
       }
     }
+    console.log(medias);
     return medias;
   }
 }
