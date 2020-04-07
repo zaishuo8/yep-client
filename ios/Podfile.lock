@@ -1,4 +1,8 @@
 PODS:
+  - aliyun-oss-react-native (1.0.0-alpha.7):
+    - AliyunOSSiOS
+    - React
+  - AliyunOSSiOS (2.10.8)
   - BaiduMapKit (4.2.0)
   - BMKLocationKit (1.3.0.2)
   - boost-for-react-native (1.63.0)
@@ -189,6 +193,8 @@ PODS:
     - BaiduMapKit (= 4.2.0)
     - BMKLocationKit (= 1.3.0.2)
     - React
+  - react-native-get-random-values (1.3.1):
+    - React
   - react-native-image-picker (2.3.1):
     - React
   - react-native-safe-area-context (0.7.3):
@@ -260,6 +266,7 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
+  - aliyun-oss-react-native (from `../node_modules/aliyun-oss-react-native`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
@@ -277,6 +284,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-baidu-map (from `../node_modules/react-native-baidu-map`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video/react-native-video.podspec`)
@@ -304,12 +312,15 @@ SPEC REPOS:
     - boost-for-react-native
     - RSKImageCropper
   trunk:
+    - AliyunOSSiOS
     - BaiduMapKit
     - BMKLocationKit
     - DVAssetLoaderDelegate
     - SPTPersistentCache
 
 EXTERNAL SOURCES:
+  aliyun-oss-react-native:
+    :path: "../node_modules/aliyun-oss-react-native"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -340,6 +351,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-baidu-map:
     :path: "../node_modules/react-native-baidu-map"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
@@ -380,6 +393,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  aliyun-oss-react-native: dfcf527949b80bb7feeecac43407e5168b2c0ae2
+  AliyunOSSiOS: 8db92936545593b9e5c66d680ef2ac0738946651
   BaiduMapKit: b6a8f31b3d2e4e5cad4084512a0d9a3878638272
   BMKLocationKit: 6c47273f985609be0a0785f2f6f12bb7c1b7e8b6
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
@@ -399,6 +414,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-baidu-map: bc1cc7a554260eabd291a3411431dc7a76af18d5
+  react-native-get-random-values: 148a42f97f2ce180a52d219144e83c278d4fe24b
   react-native-image-picker: 668e72d0277dc8c12ae90e835507c1eddd2e4f85
   react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
   react-native-video: aa527b0acb37f94c4491e70df0274cb26979405d
@@ -421,6 +437,6 @@ SPEC CHECKSUMS:
   SPTPersistentCache: df36ea46762d7cf026502bbb86a8b79d0080dff4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 9b2edba5354a273288006a3fc9cd1e91b8c3c769
+PODFILE CHECKSUM: cae3a34963ddb315a423d061c9d23bc810ac41a3
 
 COCOAPODS: 1.9.1

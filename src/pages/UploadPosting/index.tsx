@@ -22,8 +22,12 @@ import {SCREEN_WIDTH} from '../../const/screen';
 import {List, Popup} from '../../asrn_ui';
 import Icon from '../../components/Icon';
 import {Community} from '../../api/request/community';
-import {MapView, MapTypes, Geolocation, Overlay, MapApp, Position, getCurrentPosition} from '../../components/BaiduMap';
-import {getAddressWithPoi, getNearbyPoi, mapAddressWithPoiResultToPosition} from "../../api/request/baidu_map";
+import {Position, getCurrentPosition} from '../../components/BaiduMap';
+import {
+  getAddressWithPoi,
+  mapAddressWithPoiResultToPosition,
+} from '../../api/request/baidu_map';
+import {uploadOSS} from '../../components/AliyunOSS';
 
 interface Props {
   navigation: StackNavigationProp<any>;
@@ -112,6 +116,10 @@ function Index(props: Props) {
         rightTitleStyle={{color: Color.statusBlue}}
         onLeftPress={props.navigation.pop}
         headerStyle={{borderWidth: 0}}
+        onRightPress={() => {
+          props.navigation.pop();
+          uploadOSS(mediaList);
+        }}
       />
       <View style={{flex: 1, backgroundColor: Color.bgPrimary}}>
         <ScrollView showsVerticalScrollIndicator={false}>

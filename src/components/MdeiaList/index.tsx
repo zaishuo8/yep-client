@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, TouchableWithoutFeedback} from 'react-native';
+import {View, Image, TouchableWithoutFeedback, ImageProps} from 'react-native';
 import {Color} from '../../config/color_yep';
 import Icon from '../Icon';
 import Video from 'react-native-video';
@@ -90,10 +90,7 @@ export default function Index(props: Props) {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Icon
-                  name={'play-gray'}
-                  size={imgWidth / 3}
-                />
+                <Icon name={'play-gray'} size={imgWidth / 3} />
               </View>
             </View>
           );
@@ -119,4 +116,36 @@ export default function Index(props: Props) {
       )}
     </View>
   );
+}
+
+interface SingleMediaDisplayProps {
+  media: Media;
+}
+
+const defaultSingleSize = 30;
+
+export function SingleMediaDisplay(
+  singleMediaDisplayProps: SingleMediaDisplayProps,
+) {
+  const {media} = singleMediaDisplayProps;
+  const {url, type} = media;
+  console.log(media);
+  if (type === MediaType.Image) {
+    return (
+      <Image
+        source={{uri: url}}
+        style={{width: defaultSingleSize, height: defaultSingleSize}}
+        resizeMode={'cover'}
+      />
+    );
+  } else {
+    return (
+      <Video
+        style={{width: defaultSingleSize, height: defaultSingleSize}}
+        source={{uri: url}} // Can be a URL or a local file.
+        resizeMode={'cover'}
+        muted={true}
+      />
+    );
+  }
 }

@@ -40,6 +40,8 @@ target 'yepclient' do
 
   pod 'react-native-baidu-map', :path => '../node_modules/react-native-baidu-map'
 
+  pod 'aliyun-oss-react-native', :path => '../node_modules/aliyun-oss-react-native'
+
   # target 'yepclientTests' do
     # inherit! :search_paths
     # Pods for testing

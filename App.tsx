@@ -13,13 +13,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import React, {RefObject} from 'react';
-import {View} from 'react-native';
 
 import IndexTabNav from './src/pages/IndexTabNav';
 import UploadPosting from './src/pages/UploadPosting';
 import CommunitySelect from './src/pages/CommunitySelect';
 import BaiduMapPositionChoice from './src/pages/BaiduMapPositionChoice';
 import PositionSearch from './src/pages/PositionSearch';
+import {Provider} from 'react-redux';
+import store from './src/store';
 
 import Asrn, {Modal, Toast, Loading} from './src/asrn_ui';
 
@@ -101,12 +102,12 @@ class App extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <Provider store={store}>
         <StackNavigation />
         <Toast ref={this.toast} />
         <Modal ref={this.modal} visible={false} title={''} options={[]} />
         <Loading ref={this.loading} />
-      </View>
+      </Provider>
     );
   }
 
