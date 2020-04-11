@@ -32,7 +32,7 @@ AliyunOSS.initWithServerSTS(sts, endPoint, configuration);
 
 export default AliyunOSS;
 
-export async function uploadOSS(medias: Media[]) {
+export async function uploadOSS(medias: Media[]): Promise<Media[]> {
   if (medias && medias.length > 0 && !store.getState().oss.uploading) {
     // 通知 redux 显示上传
     store.dispatch({
@@ -63,7 +63,6 @@ export async function uploadOSS(medias: Media[]) {
         store.dispatch({type: EndUploadingType});
       }
     }
-    console.log(medias);
     return medias;
   }
 }

@@ -3,6 +3,7 @@ import {View, Image, TouchableWithoutFeedback, ImageProps} from 'react-native';
 import {Color} from '../../config/color_yep';
 import Icon from '../Icon';
 import Video from 'react-native-video';
+import {resizeOssImgSize} from "../../utils/mediaUtil";
 
 export enum MediaType {
   Image = '1',
@@ -120,6 +121,8 @@ export default function Index(props: Props) {
 
 interface SingleMediaDisplayProps {
   media: Media;
+  size?: number;
+  resize?: number;
 }
 
 const defaultSingleSize = 30;
@@ -127,21 +130,29 @@ const defaultSingleSize = 30;
 export function SingleMediaDisplay(
   singleMediaDisplayProps: SingleMediaDisplayProps,
 ) {
-  const {media} = singleMediaDisplayProps;
-  const {url, type} = media;
-  console.log(media);
+  const {media, size, resize} = singleMediaDisplayProps;
+  let {url, type} = media;
   if (type === MediaType.Image) {
+    if (resize) {
+      url = resizeOssImgSize(url, {size: resize});
+    }
     return (
       <Image
         source={{uri: url}}
-        style={{width: defaultSingleSize, height: defaultSingleSize}}
+        style={{
+          width: size || defaultSingleSize,
+          height: size || defaultSingleSize,
+        }}
         resizeMode={'cover'}
       />
     );
   } else {
     return (
       <Video
-        style={{width: defaultSingleSize, height: defaultSingleSize}}
+        style={{
+          width: size || defaultSingleSize,
+          height: size || defaultSingleSize,
+        }}
         source={{uri: url}} // Can be a URL or a local file.
         resizeMode={'cover'}
         muted={true}

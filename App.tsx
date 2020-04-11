@@ -14,6 +14,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import React, {RefObject} from 'react';
 
+import Entry from './src/entry';
 import IndexTabNav from './src/pages/IndexTabNav';
 import UploadPosting from './src/pages/UploadPosting';
 import CommunitySelect from './src/pages/CommunitySelect';
@@ -32,6 +33,11 @@ function StackNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Entry"
+          component={Entry}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="IndexTab"
           component={IndexTabNav}

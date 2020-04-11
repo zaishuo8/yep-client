@@ -29,6 +29,12 @@ const iconNameSource = {
   ['hook-blue']: require('../../asset/icon/hook-blue.png'),
   ['location-blue']: require('../../asset/icon/location-blue.png'),
   ['location-fill-blue']: require('../../asset/icon/location-fill-blue.png'),
+  ['plus-blue']: require('../../asset/icon/plus-blue.png'),
+  ['more-black']: require('../../asset/icon/more-black.png'),
+  ['collection-black']: require('../../asset/icon/collection-black.png'),
+  ['collection-fill-yellow']: require('../../asset/icon/collection-fill-yellow.png'),
+  ['favorites-fill-red']: require('../../asset/icon/favorites-fill-red.png'),
+  ['comment-black']: require('../../asset/icon/comment-black.png'),
 };
 
 interface Props {

@@ -28,6 +28,8 @@ import {
   mapAddressWithPoiResultToPosition,
 } from '../../api/request/baidu_map';
 import {uploadOSS} from '../../components/AliyunOSS';
+import {submitPosting} from '../../api/request/posting';
+import emitter, {CustomEvent} from '../../components/Fbemitter';
 
 interface Props {
   navigation: StackNavigationProp<any>;
@@ -107,18 +109,50 @@ function Index(props: Props) {
     }
   };
 
+  const navigateToSelectCommunity = () => {
+    props.navigation.navigate('CommunitySelect', {
+      onCommunitySelect: (community: Community) =>
+        setSelectedCommunity(community),
+    });
+  };
+
+  const submit = async () => {
+    props.navigation.pop();
+    const ossResult = await uploadOSS(mediaList);
+    await submitPosting({
+      medias: ossResult,
+      content: text,
+      communityId: selectedCommunity && selectedCommunity.id,
+      cityCode: position && position.cityCode,
+      longitude: position && position.longitude,
+      latitude: position && position.latitude,
+      address: position && position.address,
+    });
+    // 通知首页刷新
+    emitter.emit(CustomEvent.HomeFresh);
+  };
+
   return (
     <View style={{flex: 1}}>
       <CustomHeader
         title={'发布动态'}
         leftTitle={'取消'}
         rightTitle={'发布'}
-        rightTitleStyle={{color: Color.statusBlue}}
+        rightTitleStyle={{
+          color: mediaList.length > 0 ? Color.statusBlue : Color.fontGray,
+        }}
         onLeftPress={props.navigation.pop}
         headerStyle={{borderWidth: 0}}
-        onRightPress={() => {
-          props.navigation.pop();
-          uploadOSS(mediaList);
+        onRightPress={async () => {
+          if (mediaList.length === 0) {
+            return;
+          }
+          if (selectedCommunity) {
+            submit();
+          } else {
+            // 没选圈子，直接跳转到圈子页
+            navigateToSelectCommunity();
+          }
         }}
       />
       <View style={{flex: 1, backgroundColor: Color.bgPrimary}}>
@@ -152,12 +186,7 @@ function Index(props: Props) {
               extraStyle={{color: Color.statusBlue}}
               arrow={'right'}
               arrowStyle={{width: 8, height: 16}}
-              onPress={() => {
-                props.navigation.navigate('CommunitySelect', {
-                  onCommunitySelect: (community: Community) =>
-                    setSelectedCommunity(community),
-                });
-              }}
+              onPress={navigateToSelectCommunity}
             />
             <View
               style={{

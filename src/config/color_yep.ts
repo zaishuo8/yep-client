@@ -6,6 +6,7 @@ const Color = {
   statusBlue: '#0a8ce9', // 蓝色状态
   statusBlue2: '#157cf7', // 蓝色状态
   statusBlue3: '#b3d8fa', // 蓝色状态
+  statusBlue4: '#eaf6fe', // 蓝色状态
 
   splitLine1: '#EAEAEA',
   splitLine2: '#E8E8E8',

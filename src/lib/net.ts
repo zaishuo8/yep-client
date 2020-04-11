@@ -39,8 +39,12 @@ async function http(url: string, method: string, body?: object) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'x-application-token': token,
-        'x-application-user-id': userId,
+        // 'x-application-token': token,
+        // 'x-application-user-id': userId,
+
+        'x-application-token': 'ooo-xxx-aaa-ccc-222-888',
+        'x-application-user-id': '35789014',
+
         'x-application-os': Platform.OS,
         'x-application-version': '1.0.0',
       },
