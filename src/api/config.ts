@@ -8,7 +8,7 @@ const host: Host = {};
 
 const config = {
   dev: {
-    host: 'http://192.168.0.101:7001',
+    host: 'http://192.168.0.106:7001',
   },
   test: {
     host: 'http://test.jzb.web.asman.com.cn',

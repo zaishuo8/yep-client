@@ -104,9 +104,13 @@ class Index extends React.PureComponent<Props, State> {
         postingId: id,
         content: commentText,
       });
+      // 置空评论框
+      this.setState({
+        commentText: '',
+        commentingPosting: undefined,
+      });
       // 更新帖子 item
       const postingNewItem = await getOnePosting({postingId: id});
-      console.log(this[`postingItem_${id}`]);
       this[`postingItem_${id}`].updatePosting(postingNewItem);
       // 收起评论面板
       this.commentTextInputRef.current &&
@@ -155,6 +159,7 @@ class Index extends React.PureComponent<Props, State> {
               numberOfLines={5}
               placeholder={`回复${commentingPosting &&
                 commentingPosting.userInfo.name}:`}
+              value={commentText}
               onChangeText={text => this.setState({commentText: text})}
             />
             <TouchableOpacity
